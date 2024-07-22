@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ProcessedMessage {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  processedAt DateTime?
+  message     Message?  @relation(fields: [messageId], references: [id])
+  messageId   String?
+}
+
+model Message {
+  id                String             @id @default(cuid())
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  sentAt            DateTime?
+  content           String?
+  status            EnumMessageStatus?
+  processedMessages ProcessedMessage[]
+}
+
+enum EnumMessageStatus {
+  Option1
+}
